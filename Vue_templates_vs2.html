@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head><!--Det er muligt at bruge VUE oppe i HTML'en, det kan man fx gøre ved at v-bind klasser og lade det køre gennem et array-->
+<title>Page Title</title>
+<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="animate.css">
+</head>
+<body class="container mt-5">
+    <script src = "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <div  id="app">
+        <nav class="navbar navbar-light fixed-top">
+            <div class="navbar-text ml-auto d-flex">
+                <button class="btn btn-sm btn-outline-success"
+               @click="sliderStatus = !sliderStatus">$</button>
+               <div class="ml-2" v-if="cart.length>0">
+                <b>cart:</b>
+                <span class="badge badge-pill badge-success">{{cart.length}}</span>
+            </div>
+        </div>
+        </nav>
+        <!--Det nedunder du ikke helt, den vidoe det er galt med er 3,5 Using an anmation framework-->
+      <h1>Min butik</h1>
+        <transition name="custom"
+        enter-active-class="animated fadeInDown"
+        leave-active-class="animated slideOutRight">
+               <div v-if="sliderStatus">
+                <div class="align-items-center" :class="sliderState"><!--Med vue kan man kombiner to klasser, så man kan faktisk kompiner HTMLs propperties med V-binf atribut.-->
+                    <label :class="labelArr" for="formMax">Max:</label>
+                        <input type="text" class="form-control mx-2" 
+                        :style="{'width': inputWidth +'px', textAlign:'center'}" v-model="maxium"><!--input felt siger næsten sig selv, men det er der "søgningen" der sker her-->
+                        <input type="range" class="custom-range" min ="0" max="200"  v-model="maxium">
+                    </div> 
+                </div>
+            </transition>
+         <!--   <transition-group name="fade" tage="div"
+            enter-active-class="animated fadeInRight"
+            > Denne her er til animationer, men det ser ikke godt ud da min tager lidt tid om at loade
+        Den nedenunder er hvordan man gør det med javaScript-->
+        <transation-gruop name="fade" tag="div"
+        @beforeEnter="beforeEnter"
+        @enter="enter"
+        @leave="leave">
+         <div class="row d-none mb-3 align-items-center"  
+         v-for="(item, index) in products"  :key="item.id"
+         v-if="item.price<=Number(maxium)"
+         :data-index=index> <!--Det er en god ide at bruge :key i alle ens v-for loop-->
+       
+        <div class="col-1 m-auto">
+            <button class="btn btn-info" 
+                v-on:click="addItem(item)">+</button>
+        </div>
+        <div class="col-sm-4">
+            <img class="img-fluid d-block" :src="item.image" v-bind:alt="item.name">
+            </div>
+            <div class="col">
+            <h2 class="text-info">{{ item.name }}</h2>
+            <p class="mb-0">{{item.description}}</p>
+            <div class="h5 float-right">{{ item.price | currency }}</div>
+        </div>
+    </div>  
+    </transation-gruop>
+</div>
+    <script>
+        var vm = new Vue({
+        el: '#app',
+        data: {
+            sliderStatus: false,
+            products: null,
+            cart:[],
+            inputWidth: 60,
+            labelArr: ['font-weight-bold', 'mr-2'],
+            maxium: 99,//Den data der bliver lavet nu skal være korrekt, for hvis den ikke er det når kompomentet bliver lavet, virker det ikke.
+
+        },
+        filters: {//filter kan ikke tage i mod paramter, så derfor bliver der i stedet sendt en value.
+            currency: function(value) {
+            return '$' + Number.parseFloat(value).toFixed(2);
+        }
+        },
+        computed: {
+            sliderState: function() {//Det her virker ikke helt, video der blev brugt til det er 3,5Using an animation framework
+                return this.sliderStatus ? 'd-flex': 'd-none'//if else statement
+            }
+        },
+        methods: {//det her virker heller ikke, men det er fordi det ovenover ikke virker.
+            beforeEnter: function(el){
+                el.className='d-none'
+            },
+            enter: function(el){
+                var delay=el.dataset.index = 100;
+                setTimeout(function(){
+                    el.className='row d-flex mb-3 align-items-center animated fadeInRight'
+                },delay);
+            },
+            leave: function(el){
+                var delay=el.dataset.index = 100;
+                setTimeout(function(){
+                    el.className='row d-flex mb-3 align-items-center animated fadeOutRight'
+                },delay);
+            },
+            addItem: function(product){
+                this.cart.push(product);
+            }
+        },
+        mounted: function (){//lifecycle
+           fetch('https://hplussport.com/api/products/order/price') 
+            .then(response => response.json())
+            .then(data =>
+            {
+                this.products = data;
+            })  
+        }
+    });
+  
+</script>
+<style>
+    .fade-enter, .fade-leave-to{
+        opacity: 0;
+    }
+    .fade-enter-active, .fade-leave-active{
+        transition: all 1s ease-in-out;
+    }
+
+</style>
+</body>
+</html>

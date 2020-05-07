@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body class="container mt-5">
+    <script src = "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<div class="container" id="app">
+   <img 
+   :class="imgClass +' ' + 'w-25'" 
+   :src="products[0].image" 
+   :alt="products[0].name">
+   <img 
+   :class="imgClass" 
+   :src="products[1].image" 
+   :alt="products[1].name">
+   <!--v-bind gør at man pass a long et objekt. Objektet gør at den referere til en serie af af attributter-->
+   <img 
+   v-bind="{imgClass,
+    src:products[2].image,
+    alt:products[2].name
+}">
+   
+</div>
+    <script>
+  var data = {
+      imgClass: 'img-fluid',//Denne her kunnne sættes dirakte ind i class":class="'img-fluid'"", men for at kunne genbruge den er det smarter at lave en variable her og så bare referarer til den
+      products :[
+          {
+              "id" : "532",
+              "name": "Slicker Jacket",
+              "desription": "Baboo jakke",
+              "price": "125",
+              "image_title": "slicker-jacket",
+              "image":"https://img01.ztat.net/article/LE/22/1G/03/KQ/11/LE221G03K-Q11@9.jpg?imwidth=762"
+          },
+          {
+              "id" : "5356",
+              "name": "Slicker Jacket 2",
+              "desription": "Baboo jakke 134",
+              "price": "15",
+              "image_title": "slicker-jacket",
+              "image":"https://img01.ztat.net/article/LE/22/1G/03/KQ/11/LE221G03K-Q11@7.jpg?imwidth=1800"
+          },
+          {
+              "id" : "54135332",
+              "name": "Slicker Trøje",
+              "desription": "Baboo jakke",
+              "price": "99",
+              "image_title": "slicker-jacket",
+              "image":"https://img01.ztat.net/article/LE/22/1G/03/KQ/11/LE221G03K-Q11@11.png?imwidth=1800&filter=packshot"
+          }
+      ]
+  }
+    var vm = new Vue({
+        el: '#app',
+        data: data
+        });
+</script>
+
+</body>
+</html>

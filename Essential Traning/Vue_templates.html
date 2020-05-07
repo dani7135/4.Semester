@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head><!--Det er muligt at bruge VUE oppe i HTML'en, det kan man fx gøre ved at v-bind klasser og lade det køre gennem et array-->
+<title>Page Title</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body class="container mt-5">
+    <script src = "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <div  id="app">
+        <nav class="navbar navbar-light fixed-top">
+            <div class="navbar-text ml-auto d-flex">
+                <button class="btn btn-sm btn-outline-success"
+               @click="sliderStatus = !sliderStatus">$</button>
+               <div class="ml-2" v-if="cart.length>0">
+                <b>cart:</b>
+                <span class="badge badge-pill badge-success">{{cart.length}}</span>
+            </div>
+        </div>
+        </nav>
+        
+      <h1>Min butik</h1>
+        <transition name="fade">
+            <div v-if="sliderStatus">
+                <div class="align-items-center" :class="sliderState">
+                    <label :class="labelArray" for="formMax">Max:</label>
+                        <input type="text" class="form-control mx-2" 
+                        :style="{'width': inputWidth +'px', 'text-align':'center'}" v-model="maxium"><!--input felt siger næsten sig selv, men det er der "søgningen" der sker her-->
+                        <input type="range" class="custom-range" min ="0" max="200"  v-model="maxium">
+                    </div> 
+                </div>
+            </transition>
+         <div class="row d-flex mb-3 align-items-center"  v-for="item in products"  v-if="item.price<=Number(maxium)"> 
+  
+        <div class="col-1 m-auto">
+            <button class="btn btn-info" 
+                v-on:click="addItem(item)">+</button>
+        </div>
+        <div class="col-sm-4">
+            <img class="img-fluid d-block" :src="item.image" v-bind:alt="item.name">
+            </div>
+            <div class="col">
+            <h2 class="text-info">{{ item.name }}</h2>
+            <p class="mb-0">{{item.description}}</p>
+            <div class="h5 float-right">${{Number(item.price)}}</div>
+        </div>
+    </div>  
+</div>
+    <script>
+        var vm = new Vue({
+        el: '#app',
+        data: {
+            maxium: 99,//Den data der bliver lavet nu skal være korrekt, for hvis den ikke er det når kompomentet bliver lavet, virker det ikke.
+            products: null,
+            cart:[],
+            inputWidth: '60',
+            labelArray: ['font-weight-bold', 'mr-2'],
+            sliderStatus: false
+        },
+        computed: {
+            sliderState: function() {//Det her virker ikke helt, video der blev brugt til det er 3,3 Expressions and computed classes
+                return this.sliderStatus ? 'd-flex': 'd-none'//if else statement
+            }
+        },
+        methods: {
+            addItem: function(product){
+                this.cart.push(product);
+            }
+        },
+        mounted: function (){//lifecycle
+           fetch('https://hplussport.com/api/products/order/price') 
+            .then(response => response.json())
+            .then(data =>
+            {
+                this.products = data;
+            })
+        }
+    });
+  
+</script>
+<style>
+    .fade-enter, .fade-leave-to{
+        opacity: 0;
+    }
+    .fade-enter-active, .fade-leave-active{
+        transition: all 1s ease-in-out;
+    }
+</style>
+</body>
+</html>

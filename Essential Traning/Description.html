@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body class="container mt-5">
+    <script src = "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<div class="container" id="app">
+    <p>
+        <strong>Bound:</strong><br>
+        <span>{{name}}</span>
+    </p>
+    <p>
+        <strong>Parsed:</strong><br>
+        <span v-html="name"></span>
+    </p>
+    <p v-once>
+        <strong>Unchanggeable:</strong><br><!--Bruges kun til kode som man ved ikke skal opdater-->
+        <span>{{name}}</span>
+    <h5>Text</h5>
+    <textarea class="form-control" rows="3"
+    v-model="name"></textarea>
+    </p></div>
+</div>
+    <script>
+  
+    var vm = new Vue({
+        el: '#app',
+        data:{
+            name: "Jakke"
+        }
+        
+    });
+</script>
+
+</body>
+</html>
